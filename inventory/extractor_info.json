@@ -12,7 +12,14 @@
             "repUrl": "https://opensource.ncsa.illinois.edu/stash/scm/cats/extractors-zip.git"
         }
     ],
-    "process": {},
+    "process": {
+        "file": [
+            "application/zip",
+            "application/x-zip",
+            "application/x-7z-compressed",
+            "multi/files-zipped"
+        ]
+    },
     "external_services": [],
     "dependencies": [],
     "bibtex": []
