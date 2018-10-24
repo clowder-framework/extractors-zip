@@ -2,6 +2,7 @@
 
 import logging
 import zipfile
+import json
 
 from pyclowder.extractors import Extractor
 from pyclowder.utils import CheckMessage
@@ -24,15 +25,17 @@ class ZipContentsExtractor(Extractor):
         logging.getLogger('__main__').setLevel(logging.DEBUG)
 
     def check_message(self, connector, host, secret_key, resource, parameters):
-        return CheckMessage.bypass
+        return CheckMessage.download
 
     def process_message(self, connector, host, secret_key, resource, parameters):
         zip = resource['local_paths'][0]
         zipname = resource['name'].replace(".zip", "")
+        dsid = resource["parent"]["id"]
 
         # Create folder with name of zipfile
-        url = '%sapi/datasets/%s/newFolder?key=%s' % (host, resource["parent"]["id"], secret_key)
-        folderid = connector.post(url, data={"name": zipname}, verify=connector.ssl_verify if connector else True)
+        url = '%sapi/datasets/%s/newFolder?key=%s' % (host, dsid, secret_key)
+        response = connector.post(url, json_data={"name": zipname, "parentId": dsid, "parentType": "dataset"}, verify=connector.ssl_verify if connector else True)
+        folderid = response.json()['id']
 
         # Extract files into new folder
         zf = zipfile.ZipFile(zip)
@@ -40,9 +43,11 @@ class ZipContentsExtractor(Extractor):
         for filename in contents:
             zf.extract(filename)
             if not filename.endswith("/"):
-                fileid = upload_to_dataset(connector, host, secret_key, resource["parent"]["id"], filename)
-                url = '%sapi/datasets/%s/movefolder/%s/%s?key=%s' % (host, resource["parent"]["id"], folderid, fileid, secret_key)
-                connector.post(url)
+                fileid = upload_to_dataset(connector, host, secret_key, dsid, filename)
+                url = '%sapi/datasets/%s/moveFile/%s/%s?key=%s' % (host, dsid, folderid, fileid, secret_key)
+
+                # Endpoint requires application/json body even if empty, so send empty json data
+                connector.post(url, json_data={})
 
 if __name__ == "__main__":
     extractor = ZipContentsExtractor()

@@ -2,9 +2,6 @@
 FROM clowder/pyclowder:2
 MAINTAINER Max Burnette <mburnet2@illinois.edu>
 
-# Switch to clowder, copy files and be ready to run
-USER clowder
-
 # command to run when starting docker
 COPY entrypoint.sh *.py extractor_info.json /home/clowder/
 ENTRYPOINT ["/home/clowder/entrypoint.sh"]
