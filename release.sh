@@ -11,7 +11,7 @@ set -e
 # BRANCH="master" SERVER=isda-registry.ncsa.illinois.edu/ ./release.sh
 
 # use DEBUG=echo ./release.sh to print all commands
-export DEBUG=${DEBUG:-"echo"}
+export DEBUG=${DEBUG:-""}
 
 # use SERVER=XYZ/ to push to a different server
 SERVER=${SERVER:-""}
