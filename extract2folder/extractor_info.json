@@ -13,12 +13,7 @@
         }
     ],
     "process": {
-        "file": [
-            "application/zip",
-            "application/x-zip",
-            "application/x-7z-compressed",
-            "multi/files-zipped"
-        ]
+        "file": ["zip/manual_submission"]
     },
     "external_services": [],
     "dependencies": [],
