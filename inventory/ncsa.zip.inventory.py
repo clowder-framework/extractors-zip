@@ -40,7 +40,9 @@ class ZipInventory(Extractor):
             },
             "agent": {
                 "@type": "cat:extractor",
-                "extractor_id": host + ("" if host.endswith("/") else "/") + "api/extractors/"+ self.extractor_info['name']
+                "extractor_id": host + ("" if host.endswith("/") else "/") + "api/extractors/"+ self.extractor_info['name'],
+                "version": self.extractor_info['version'],
+                "name": self.extractor_info['name']
             }
         }
 

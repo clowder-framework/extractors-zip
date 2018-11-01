@@ -34,7 +34,10 @@ class ZipContentsExtractor(Extractor):
 
         # Create folder with name of zipfile
         url = '%sapi/datasets/%s/newFolder?key=%s' % (host, dsid, secret_key)
-        response = connector.post(url, json_data={"name": zipname, "parentId": dsid, "parentType": "dataset"}, verify=connector.ssl_verify if connector else True)
+        response = connector.post(url, json_data={"name": zipname,
+                                                  "parentId": resource['parent']['id'],
+                                                  "parentType": resource['parent']['type']
+                                                  }, verify=connector.ssl_verify if connector else True)
         folderid = response.json()['id']
 
         # Extract files into new folder
