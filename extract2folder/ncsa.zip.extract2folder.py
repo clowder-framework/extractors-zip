@@ -2,6 +2,8 @@
 
 import logging
 import zipfile
+import shutil
+import os
 import json
 
 from pyclowder.extractors import Extractor
@@ -48,6 +50,11 @@ class ZipContentsExtractor(Extractor):
 
                 # Endpoint requires application/json body even if empty, so send empty json data
                 connector.post(url, json_data={})
+        if os.path.isdir(zipname):
+            try:
+                shutil.rmtree(zipname)
+            except Exception as e:
+                print(e)
 
 if __name__ == "__main__":
     extractor = ZipContentsExtractor()
