@@ -16,7 +16,10 @@ CMD ["extractor"]
 # these to your setup. If RABBITMQ_URI is not set, it will try and use the rabbitmq
 # server that is linked into the container. MAIN_SCRIPT is set to the script to be
 # executed by entrypoint.sh
-ENV RABBITMQ_URI="" \
+ENV VERSION=${VERSION} \
+    BUILDNUMBER=${BUILDNUMBER} \
+    GITSHA1=${GITSHA1} \
+    RABBITMQ_URI="" \
     RABBITMQ_EXCHANGE="clowder" \
     RABBITMQ_VHOST="%2F" \
     RABBITMQ_QUEUE="ncsa.zip.inventory" \
