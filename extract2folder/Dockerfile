@@ -1,9 +1,14 @@
 # FROM clowder/python-base
-FROM clowder/pyclowder:2
+FROM python:3.7-slim
 MAINTAINER Max Burnette <mburnet2@illinois.edu>
 
+ARG VERSION="unknown"
+ARG BUILDNUMBER="unknown"
+ARG GITSHA1="unknown"
+
 # command to run when starting docker
-COPY entrypoint.sh *.py extractor_info.json /home/clowder/
+COPY entrypoint.sh *.py extractor_info.json requirements.txt /home/clowder/
+RUN pip install -r  /home/clowder/requirements.txt
 ENTRYPOINT ["/home/clowder/entrypoint.sh"]
 CMD ["extractor"]
 
