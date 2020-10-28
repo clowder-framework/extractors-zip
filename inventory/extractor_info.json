@@ -9,7 +9,7 @@
     "repository": [
         {
             "repType": "git",
-            "repUrl": "https://opensource.ncsa.illinois.edu/stash/scm/cats/extractors-zip.git"
+            "repUrl": "https://github.com/clowder-framework/extractors-zip.git"
         }
     ],
     "process": {
@@ -22,5 +22,6 @@
     },
     "external_services": [],
     "dependencies": [],
-    "bibtex": []
+    "bibtex": [],
+    "labels": ["Type/Zip"]
 }
