@@ -44,7 +44,7 @@ jobs:
       - name: Extractor Version
         run: |
           version="$(awk '/"version":/ { print $2 }' ${{ matrix.FOLDER }}/extractor_info.json | sed 's/^.*"\([0-9\.]*\)".*$/\1/')"
-          echo "::set-env name=VERSION::${version}"
+          echo "VERSION=${version}" >> $GITHUB_ENV
           tags="latest"
           oldversion=""
           while [ "${oldversion}" != "${version}" ]; do
@@ -52,33 +52,47 @@ jobs:
             tags="${tags},${version}"
             version=${version%.*}
           done
-          echo "::set-env name=TAGS::${tags}"
+          echo "TAGS=${tags}" >> $GITHUB_ENV
+
       # build the docker image, this will always run to make sure
       # the Dockerfile still works.
       - name: Build image
-        run: |
-          docker build --tag ${{ matrix.NAME }} ${{ matrix.FOLDER }}
-      # this will publish to the actor (person) github packages
-      - name: Publish to GitHub
-        if: github.event_name != 'pull_request'
-        uses: elgohr/Publish-Docker-Github-Action@2.18
+        uses: elgohr/Publish-Docker-Github-Action@2.22
         env:
           VERSION: ${{ env.VERSION }}
           BUILDNUMBER: ${{ github.run_number }}
           GITSHA1: ${{ github.sha  }}
         with:
+          registry: docker.pkg.github.com
           name: ${{ github.repository_owner }}/${{ github.event.repository.name }}/extractors-${{ matrix.NAME }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           context: ${{ matrix.FOLDER }}
           tags: "${{ env.TAGS }}"
-          registry: docker.pkg.github.com
+          buildargs: VERSION,BUILDNUMBER,GITSHA1
+          no_push: true
+
+      # this will publish to github container registry
+      - name: Publish to GitHub
+        if: github.event_name == 'push' && github.repository == env.MAIN_REPO
+        uses: elgohr/Publish-Docker-Github-Action@2.22
+        env:
+          VERSION: ${{ env.VERSION }}
+          BUILDNUMBER: ${{ github.run_number }}
+          GITSHA1: ${{ github.sha  }}
+        with:
+          registry: ghcr.io
+          name: ${{ github.repository_owner }}/extractors-${{ matrix.NAME }}
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_PASSWORD }}
+          context: ${{ matrix.FOLDER }}
+          tags: "${{ env.TAGS }}"
           buildargs: VERSION,BUILDNUMBER,GITSHA1
 
       # this will publish to the clowder dockerhub repo
       - name: Publish to Docker Hub
-        if: github.event_name != 'pull_request' && github.repository == env.MAIN_REPO
-        uses: elgohr/Publish-Docker-Github-Action@2.18
+        if: github.event_name != 'push' && github.repository == env.MAIN_REPO
+        uses: elgohr/Publish-Docker-Github-Action@2.22
         env:
           VERSION: ${{ env.VERSION }}
           BUILDNUMBER: ${{ github.run_number }}
@@ -94,7 +108,7 @@ jobs:
       # this will update the README of the dockerhub repo
       - name: check file
         id: filecheck
-        if: github.event_name != 'pull_request' && github.repository == env.MAIN_REPO
+        if: github.event_name != 'push' && github.repository == env.MAIN_REPO
         run: |
           if [ "${{ matrix.README }}" != "" -a -e "${{ matrix.README }}" ]; then
             echo "##[set-output name=exists;]true"
@@ -102,7 +116,7 @@ jobs:
             echo "##[set-output name=exists;]false"
           fi
       - name: Docker Hub Description
-        if: github.event_name != 'pull_request' && github.repository == env.MAIN_REPO && steps.filecheck.outputs.exists == 'true'
+        if: github.event_name != 'push' && github.repository == env.MAIN_REPO && steps.filecheck.outputs.exists == 'true'
         uses: peter-evans/dockerhub-description@v2
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
