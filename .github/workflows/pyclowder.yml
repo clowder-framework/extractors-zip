@@ -12,7 +12,7 @@ on:
 
 # Certain actions will only run when this is the main repo.
 env:
-  MAIN_REPO: clowder-framework/extractors-geo
+  MAIN_REPO: clowder-framework/extractors-zip
 
 jobs:
   pyclowder:
