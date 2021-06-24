@@ -45,7 +45,9 @@ class ZipContentsExtractor(Extractor):
         # Extract files into new folder
         zf = zipfile.ZipFile(zip)
         contents = zf.namelist()
+        connector.message_process(resource, "ZipFile has %d files." % len(contents))
         for filename in contents:
+            logging.getLogger().info("Extracting %s" % filename)
             zf.extract(filename)
             if not filename.endswith("/"):
                 fileid = upload_to_dataset(connector, host, secret_key, dsid, filename)
@@ -53,6 +55,8 @@ class ZipContentsExtractor(Extractor):
 
                 # Endpoint requires application/json body even if empty, so send empty json data
                 connector.post(url, json_data={})
+                # delete file 
+                os.remove(filename)
         if os.path.isdir(zipname):
             try:
                 shutil.rmtree(zipname)
