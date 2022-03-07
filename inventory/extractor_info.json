@@ -1,27 +1,29 @@
 {
-    "@context": "http://clowder.ncsa.illinois.edu/contexts/extractors.jsonld",
-    "name": "ncsa.zip.inventory",
-    "version": "1.1.0",
-    "description": "List contents of a zipfile as text metadata.",
-    "author": "Max Burnette <mburnet2@illinois.edu>",
-    "contributors": [],
-    "contexts": [],
-    "repository": [
-        {
-            "repType": "git",
-            "repUrl": "https://github.com/clowder-framework/extractors-zip.git"
-        }
-    ],
-    "process": {
-        "file": [
-            "application/zip",
-            "application/x-zip",
-            "application/x-7z-compressed",
-            "multi/files-zipped"
-        ]
-    },
-    "external_services": [],
-    "dependencies": [],
-    "bibtex": [],
-    "labels": ["Type/Zip"]
+  "@context": "http://clowder.ncsa.illinois.edu/contexts/extractors.jsonld",
+  "name": "ncsa.zip.inventory",
+  "version": "1.1.1",
+  "description": "List contents of a zipfile as text metadata.",
+  "author": "Max Burnette <mburnet2@illinois.edu>",
+  "contributors": [],
+  "contexts": [],
+  "repository": [
+    {
+      "repType": "git",
+      "repUrl": "https://github.com/clowder-framework/extractors-zip.git"
+    }
+  ],
+  "process": {
+    "file": [
+      "application/zip",
+      "application/x-zip",
+      "application/x-7z-compressed",
+      "multi/files-zipped"
+    ]
+  },
+  "external_services": [],
+  "dependencies": [],
+  "bibtex": [],
+  "labels": [
+    "Type/Zip"
+  ]
 }
